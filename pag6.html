@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pinball</title>
+<style>
+    body {
+        margin: 0;
+        overflow: hidden;
+        font-family: Arial, sans-serif;
+        background-color: chocolate;
+    }
+    canvas {
+        display: block;
+        margin: auto;
+    }
+    a{
+        font-size: xx-large;
+    }
+</style>
+</head>
+<body>
+
+<canvas id="pinballCanvas" width="800" height="600"></canvas>
+
+<script>
+const canvas = document.getElementById('pinballCanvas');
+const context = canvas.getContext('2d');
+
+const paddleWidth = 100;
+const paddleHeight = 20;
+const paddleSpeed = 70;
+let paddleX = (canvas.width - paddleWidth) / 2;
+const ballRadius = 10;
+let ballX = canvas.width / 2;
+let ballY = canvas.height - 30;
+let ballSpeedX = 5;
+let ballSpeedY = -5;
+let lives = 100;
+let score = 0;
+let gameOver = false;
+
+function drawPaddle() {
+    context.beginPath();
+    context.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
+    context.fillStyle = 'white';
+    context.fill();
+    context.closePath();
+}
+
+function drawBall() {
+    context.beginPath();
+    context.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
+    context.fillStyle = 'white';
+    context.fill();
+    context.closePath();
+}
+
+function drawScore() {
+    context.font = '16px Arial';
+    context.fillStyle = 'white';
+    context.fillText('Pontuação: ' + score, 10, 20);
+}
+
+function drawLives() {
+    context.font = '16px Arial';
+    context.fillStyle = 'white';
+    context.fillText('vidas: ' + lives, canvas.width - 80, 20);
+}
+
+function drawGameOver() {
+    context.font = '30px Arial';
+    context.fillStyle = 'white';
+    context.fillText('Fim de Jogo!', canvas.width / 2 - 100, canvas.height / 2);
+}
+
+function draw() {
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    drawPaddle();
+    drawBall();
+    drawScore();
+    drawLives();
+
+    if (gameOver) {
+        drawGameOver();
+        return;
+    }
+
+    // Movimentação da bola
+    ballX += ballSpeedX;
+    ballY += ballSpeedY;
+
+    // Colisão com as paredes laterais
+    if (ballX + ballRadius > canvas.width || ballX - ballRadius < 0) {
+        ballSpeedX = -ballSpeedX;
+    }
+
+    // Colisão com a parte superior
+    if (ballY - ballRadius < 0) {
+        ballSpeedY = -ballSpeedY;
+    }
+
+    // Colisão com o paddle
+    if (ballY + ballRadius > canvas.height - paddleHeight && ballX > paddleX && ballX < paddleX + paddleWidth) {
+        ballSpeedY = -ballSpeedY;
+        score++;
+    }
+
+    // Verificar se a bola caiu
+    if (ballY + ballRadius > canvas.height) {
+        lives--;
+        if (lives === 0) {
+            gameOver = true;
+        } else {
+            ballX = canvas.width / 2;
+            ballY = canvas.height - 30;
+            ballSpeedX = 5;
+            ballSpeedY = -5;
+            paddleX = (canvas.width - paddleWidth) / 2;
+        }
+    }
+
+    requestAnimationFrame(draw);
+}
+
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'ArrowLeft' && paddleX > 0) {
+        paddleX -= paddleSpeed;
+    } else if (event.key === 'ArrowRight' && paddleX < canvas.width - paddleWidth) {
+        paddleX += paddleSpeed;
+    }
+});
+
+draw();
+</script>
+<a href="pag1.html">Voltar</a>
+
+</body>
+</html>

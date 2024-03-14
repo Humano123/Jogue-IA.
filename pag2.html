@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pedra, papel ou tesoura.</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background-color: chocolate;
+    }
+    h1 {
+        margin-top: 50px;
+    }
+    #choices {
+        margin-top: 30px;
+    }
+    #result {
+        margin-top: 20px;
+        font-size: 24px;
+    }
+</style>
+</head>
+<body>
+
+<h1>Pedra, papel ou tesoura</h1>
+
+<div id="choices">
+    <button onclick="playGame('Pedra')">Pedra</button>
+    <button onclick="playGame('Papel')">Papel</button>
+    <button onclick="playGame('Tesoura')">Tesoura</button>
+</div>
+<a href="pag1.html">Voltar</a>
+
+<div id="result"></div>
+
+<script>
+function playGame(playerChoice) {
+    var choices = ['Pedra', 'Papel', 'Tesoura'];
+    var computerChoice = choices[Math.floor(Math.random() * 3)];
+    var result = '';
+
+    if (playerChoice === computerChoice) {
+        result = "Empate!";
+    } else if ((playerChoice === 'Pedra' && computerChoice === 'Tesoura') ||
+               (playerChoice === 'Papel' && computerChoice === 'Pedra') ||
+               (playerChoice === 'Tesoura' && computerChoice === 'Papel')) {
+        result = "Você ganhou!";
+    } else {
+        result = "Computador venceu!!";
+    }
+
+    document.getElementById('result').innerText = result;
+}
+</script>
+
+</body>
+</html>

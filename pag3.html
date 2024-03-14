@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jogo de Labirinto</title>
+<h1>Caso o jogo bugar, apenar resete a pagina</h1>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background-color: chocolate;
+    }
+    #maze {
+        display: inline-block;
+        margin-top: 30px;
+        font-size: 20px;
+    }
+    .row {
+        display: flex;
+    }
+    .cell {
+        width: 40px;
+        height: 40px;
+        border: 1px solid black;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .player {
+        background-color: green;
+    }
+    .wall {
+        background-color: black;
+    }
+    .exit {
+        background-color: red;
+    }
+</style>
+</head>
+<body>
+
+<h1>Jogo de Labirinto</h1>
+
+<div id="maze"></div>
+
+<script>
+const MAZE_SIZE = 10;
+let maze = generateMaze(MAZE_SIZE);
+let playerPosition = { x: 0, y: 0 };
+let exitPosition = { x: MAZE_SIZE - 1, y: MAZE_SIZE - 1 };
+
+document.addEventListener('keydown', movePlayer);
+
+function generateMaze(size) {
+    let maze = [];
+    for (let i = 0; i < size; i++) {
+        maze.push([]);
+        for (let j = 0; j < size; j++) {
+            maze[i].push(Math.random() < 0.3 ? 1 : 0); // 30% de chance de ser parede
+        }
+    }
+    maze[0][0] = 0; // Garantindo que a posição inicial do jogador seja vazia
+    maze[size - 1][size - 1] = 0; // Garantindo que a posição de saída seja vazia
+    return maze;
+}
+
+function drawMaze() {
+    let mazeElement = document.getElementById('maze');
+    mazeElement.innerHTML = '';
+    for (let i = 0; i < MAZE_SIZE; i++) {
+        let rowElement = document.createElement('div');
+        rowElement.classList.add('row');
+        for (let j = 0; j < MAZE_SIZE; j++) {
+            let cellElement = document.createElement('div');
+            cellElement.classList.add('cell');
+            if (maze[i][j] === 1) {
+                cellElement.classList.add('wall');
+            } else if (i === playerPosition.y && j === playerPosition.x) {
+                cellElement.classList.add('player');
+            } else if (i === exitPosition.y && j === exitPosition.x) {
+                cellElement.classList.add('exit');
+            }
+            rowElement.appendChild(cellElement);
+        }
+        mazeElement.appendChild(rowElement);
+    }
+}
+
+function movePlayer(event) {
+    let dx = 0, dy = 0;
+    switch (event.key) {
+        case 'ArrowUp':
+            dy = -1;
+            break;
+        case 'ArrowDown':
+            dy = 1;
+            break;
+        case 'ArrowLeft':
+            dx = -1;
+            break;
+        case 'ArrowRight':
+            dx = 1;
+            break;
+        default:
+            return;
+    }
+    let newX = playerPosition.x + dx;
+    let newY = playerPosition.y + dy;
+    if (newX >= 0 && newX < MAZE_SIZE && newY >= 0 && newY < MAZE_SIZE && maze[newY][newX] !== 1) {
+        playerPosition.x = newX;
+        playerPosition.y = newY;
+        drawMaze();
+        if (playerPosition.x === exitPosition.x && playerPosition.y === exitPosition.y) {
+            alert('Parabéns! Você escapou do labirinto!');
+            resetGame();
+        }
+    }
+}
+
+function resetGame() {
+    maze = generateMaze(MAZE_SIZE);
+    playerPosition = { x: 0, y: 0 };
+    drawMaze();
+}
+
+drawMaze();
+</script>
+<a href="pag1.html">Voltar</a>
+
+</body>
+</html>
